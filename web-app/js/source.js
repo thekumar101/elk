@@ -12,14 +12,13 @@ function copyIp(response) {
 (function() {
     window.onload = function() {
         var userData = {};
+        var clickData = {};
 
         //gather header tags
         var h1s = document.getElementsByTagName('h1'),
             h2s = document.getElementsByTagName('h2');
         userData.h1s = h1s;
         userData.h2s = h2s;
-
-        getChildNodes(h1);
 
         //get User: WMC Application specific
         userData.userName = window.username ? window.username : "Anonymous";
@@ -52,17 +51,31 @@ function copyIp(response) {
         }, 1000);
 
         document.onclick = function(e) {
-            logClick(e)
+            sendClick(e.srcElement);
         };
-
-        //click capture - TODO: link with iDB
-        function logClick(e) {
-            console.log(e);
-        }
 
         //sends data from client to WS
         function sendData(userData) {
             var dataToSend = JSON.stringify(userData);
+            console.log(dataToSend);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Analytics/data/analytics', true); //'/server' would be replaced by the WS provided by Priya
+            xhr.onload = function(e) {
+                if (this.status == 200) {
+                    console.log(this.responseText);
+                } else {
+                    console.log('Reason: ' + this.statusText + '\n' + 'Response: ' + this.responseText.trim() + '\n' + 'Status Code: ' + this.status);
+                }
+            };
+            xhr.send(dataToSend);
+        }
+
+        //sends data from client to WS
+        function sendClick(data) {
+            console.log(data);
+            clickData.clickElement = data.childNodes[0].data;
+            console.log(clickData);
+            var dataToSend = JSON.stringify(clickData);
             console.log(dataToSend);
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/Analytics/data/analytics', true); //'/server' would be replaced by the WS provided by Priya

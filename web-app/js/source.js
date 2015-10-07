@@ -13,6 +13,14 @@ function copyIp(response) {
     window.onload = function() {
         var userData = {};
 
+        //gather header tags
+        var h1s = document.getElementsByTagName('h1'),
+            h2s = document.getElementsByTagName('h2');
+        userData.h1s = h1s;
+        userData.h2s = h2s;
+
+        getChildNodes(h1);
+
         //get User: WMC Application specific
         userData.userName = window.username ? window.username : "Anonymous";
 
@@ -20,7 +28,16 @@ function copyIp(response) {
         userData.userAgent = navigator.userAgent;
 
         //get location obj
-        userData.location = window.location
+        userData.location = {};
+        userData.location.hash = location.hash;
+        userData.location.host = location.host;
+        userData.location.hostname = location.hostname;
+        userData.location.href = location.href;
+        userData.location.pathname = location.pathname;
+        userData.location.port = location.port;
+        userData.location.protocol = location.protocol;
+
+
 
         //get IP
         var script = document.createElement("script");
@@ -48,7 +65,7 @@ function copyIp(response) {
             var dataToSend = JSON.stringify(userData);
             console.log(dataToSend);
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/Hackovation/data/analytics', true); //'/server' would be replaced by the WS provided by Priya
+            xhr.open('POST', '/Analytics/data/analytics', true); //'/server' would be replaced by the WS provided by Priya
             xhr.onload = function(e) {
                 if (this.status == 200) {
                     console.log(this.responseText);
